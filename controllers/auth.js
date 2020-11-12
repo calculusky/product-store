@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const { hash, compare } = require('bcryptjs');
 const { throwError, normalizeName } = require('../utilities/helpers');
+const jwt = require('jsonwebtoken');
 
 const {
     isEmail,
@@ -21,17 +22,21 @@ exports.postSignup = async (req, res, next) => {
 
     //validate inputs and sanitize data
     const errors = [];
-    if(isEmpty(name)){
+    let invalidPassword;
+    if(isEmpty(fullname)){
         errors.push('Invalid name')
     }
-    if(!isEmail(email)){
+    if(!isEmail(email.trim())){
         errors.push('Invalid email')
     }
     if(!isAlphanumeric(password)){
+        invalidPassword = true;
         errors.push('Invalid password')
     }
-    if (password !== confirmpassword) {
-        errors.push('password do not match');
+    if(!invalidPassword){
+        if (password !== confirmpassword) {
+            errors.push('password do not match');
+        }
     }
 
     try {
@@ -40,7 +45,13 @@ exports.postSignup = async (req, res, next) => {
         }
         //sanitize inputs
         const sanEmail = normalizeEmail(email.trim());
-        const sanName = normalizeName(fullname);
+        const sanName = normalizeName(fullname.trim());
+
+        //check if user exists in db
+        const existingUser = await User.findOne({ email: sanEmail });
+        if(existingUser){
+            throwError({ message: 'Email already exists', status: 401});
+        }
 
         //hash password and store user in db
         const hashedPassword = await hash(password, 12);
@@ -58,7 +69,39 @@ exports.postSignup = async (req, res, next) => {
         
     } catch (error) {
         next(error);
-        console.log(error);
     }
 
+}
+
+exports.postLogin = async (req, res, next) => {
+    const { email, password } = req.body;
+
+    //check login credentials and generate token for the logged in user
+   try {
+        const errors = [];
+        if(!isEmail(email)){
+            throwError({ success: false, status: 422, message: 'Incorrect email or password' });
+        }
+        
+        //sanitize email
+        const sanEmail = normalizeEmail(email.trim());
+        const user = await User.findOne({ email: sanEmail });
+        if(!user){
+            throwError({ success: false, status: 422, message: 'Incorrect email or password' });
+        }
+        const matched = await compare(password, user.password);
+        if(!matched){
+            throwError({ success: false, status: 422, message: 'Incorrect email or password' });
+        }
+        //generate jwt token
+        const payload = {
+            ...user._doc,
+            password: undefined
+        }
+        const token = jwt.sign()
+    
+    
+   } catch (error) {
+       next(error)
+   }
 }
