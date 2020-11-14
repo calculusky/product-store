@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const { hash, compare } = require('bcryptjs');
 const { throwError, normalizeName } = require('../utilities/helpers');
+const config = require('../config');
 const jwt = require('jsonwebtoken');
 
 const {
@@ -95,13 +96,27 @@ exports.postLogin = async (req, res, next) => {
         }
         //generate jwt token
         const payload = {
-            ...user._doc,
-            password: undefined
+            fullname: user._doc.fullname,
+            email: user._doc.email,
+            role: user._doc.role
         }
-        const token = jwt.sign()
-    
+        
+
+
+        const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '12h' });
+        console.log(token);
+        const data = {
+            ...payload,
+            token: token
+        }
+        return res.json({ success: true, data: data })
     
    } catch (error) {
        next(error)
    }
+}
+
+exports.pstLogout = (req, res, next) => {
+    const token = req.body.token;
+
 }
