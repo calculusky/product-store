@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 
 //throws error
 exports.throwError = ({ message, status, detail }) => {
@@ -17,3 +19,13 @@ exports.normalizeName = (inputnames) => {
     const fullname = newNames.join(' ');
     return fullname; 
 }
+
+//delete old image
+exports.deleteImage = (imagePath) => {
+    fs.unlink(imagePath, err => {
+        if(err){
+            throw err
+        }
+    })
+}
+
