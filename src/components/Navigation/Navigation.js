@@ -1,44 +1,66 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import UserContext from '../../context/context';
+import Aux from '../../hoc/Auxiliary';
+import './Navigation.css'
 
-const navigation = (props) => {
+const Navigation = (props) => {
+    const { userData, setUserData } = useContext(UserContext);
+    //console.log(userData, 'uuuuddd');
+
+    //check to display user profile or login, signup button
+    let authButtonsOrProfile = (
+        <Aux>
+            <Link class="btn btn-outline-light my-2 my-sm-0 auth-button" to="/login" role="button">Login</Link>
+            <Link class="btn btn-outline-light my-2 my-sm-0 auth-button" to="/signup" role="button">Signup</Link>
+        </Aux>
+    )
+    if(userData.user){
+        let userRole = userData.user.role === 'normal' ? userData.user.firstname : `${userData.user.firstname}(Admin)`;
+        authButtonsOrProfile = (
+            <Aux>
+                <ul className="navbar-nav mr-auto">
+                    <li className="nav-item dropdown">
+                        <Link to="#" className="nav-link dropdown-toggle text-white" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {userRole} 
+                        </Link>
+                        <div className="dropdown-menu navbar-right-dropdown" aria-labelledby="navbarDropdown">
+                            <Link className="dropdown-item"to="#">{ userData.user.firstname }</Link>
+                            <Link className="dropdown-item"to="/addproduct">New Product</Link>
+                            <div className="dropdown-divider"></div>                               
+                            <Link className="dropdown-item" to="javascript:void(0)" id="logoutLink">Logout</Link>
+                        </div>
+                    </li>
+                </ul>
+            </Aux>
+        )
+    }
+
     return ( 
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">  
-            <Link to ="/" class="navbar-brand">Product Store</Link>  
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">  
+            <Link to ="/" className="navbar-brand">Product Store</Link>  
+            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">               
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <Link class="nav-link" to="/products">Products<span class="sr-only">(current)</span></Link>
+            <div className="collapse navbar-collapse" id="navbarSupportedContent">               
+                    <ul className="navbar-nav mr-auto">
+                        <li className="nav-item active">
+                            <Link className="nav-link" to="/products">Products<span className="sr-only">(current)</span></Link>
                         </li>
-                        <li class="nav-item active">
-                            <Link class="nav-link"to="/addproduct">Create Product<span class="sr-only">(current)</span></Link>
+                        <li className="nav-item active">
+                            <Link className="nav-link" to="/addproduct">Create Product<span className="sr-only">(current)</span></Link>
                         </li>
-                        {/* <li class="nav-item dropdown">
-                            <Link class="nav-link dropdown-toggle text-white"to="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {/* <li className="nav-item dropdown">
+                            <Link className="nav-link dropdown-toggle text-white"to="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Monitoring
                             </Link>
-                            <div class="dropdown-menu navbar-custom-dropdown" aria-labelledby="navbarDropdown">
-                                <Link class="dropdown-item"to="/monitoring/nodes">Network</Link> 
+                            <div className="dropdown-menu navbar-custom-dropdown" aria-labelledby="navbarDropdown">
+                                <Link className="dropdown-item"to="/monitoring/nodes">Network</Link> 
                             </div>
                         </li> */}
                     </ul>
-                    <div class="navbar-right-div">
-                        <ul class="navbar-nav mr-auto">
-                            <li class="nav-item dropdown">
-                                <Link to="#" class="nav-link dropdown-toggle text-white" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                   Nedusky (Admin) 
-                                </Link>
-                                <div class="dropdown-menu navbar-right-dropdown" aria-labelledby="navbarDropdown">
-                                    <Link class="dropdown-item"to="/admin/addsite">Add Site</Link>
-                                    <Link class="dropdown-item"to="#">Add Server</Link>
-                                    <div class="dropdown-divider"></div>                               
-                                    <Link class="dropdown-item" to="javascript:void(0)" id="logoutLink">Logout</Link>
-                                </div>
-                            </li>
-                        </ul>
+                    <div className="navbar-right-div">
+                        { authButtonsOrProfile }
                     </div>    
             </div>
             
@@ -46,4 +68,4 @@ const navigation = (props) => {
      );
 }
  
-export default navigation;
+export default Navigation;
