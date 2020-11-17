@@ -15,7 +15,8 @@ const {
 
 exports.postSignup = async (req, res, next) => {
     const {
-        fullname,
+        firstname,
+        lastname,
         email,
         password,
         confirmpassword
@@ -24,7 +25,10 @@ exports.postSignup = async (req, res, next) => {
     //validate inputs and sanitize data
     const errors = [];
     let invalidPassword;
-    if(isEmpty(fullname)){
+    if(isEmpty(firstname)){
+        errors.push('Invalid name')
+    }
+    if(isEmpty(lastname)){
         errors.push('Invalid name')
     }
     if(!isEmail(email.trim())){
@@ -46,7 +50,8 @@ exports.postSignup = async (req, res, next) => {
         }
         //sanitize inputs
         const sanEmail = normalizeEmail(email.trim());
-        const sanName = normalizeName(fullname.trim());
+        const sanFirstname = normalizeName(firstname.trim());
+        const sanLastname = normalizeName(lastname.trim());
 
         //check if user exists in db
         const existingUser = await User.findOne({ email: sanEmail });
@@ -57,7 +62,8 @@ exports.postSignup = async (req, res, next) => {
         //hash password and store user in db
         const hashedPassword = await hash(password, 12);
         const user = new User({
-            fullname: sanName,
+            firstname: sanFirstname,
+            lastname: sanLastname,
             email: sanEmail,
             password: hashedPassword
         });
@@ -96,15 +102,14 @@ exports.postLogin = async (req, res, next) => {
         }
         //generate jwt token
         const payload = {
-            fullname: user._doc.fullname,
+            _id: user._doc._id,
+            firstname: user._doc.firstname,
+            lastname: user._doc.lastname,
             email: user._doc.email,
             role: user._doc.role
-        }
-        
-
-
+        }        
         const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '12h' });
-        console.log(token);
+        //console.log(token);
         const data = {
             ...payload,
             token: token
@@ -119,4 +124,41 @@ exports.postLogin = async (req, res, next) => {
 exports.pstLogout = (req, res, next) => {
     const token = req.body.token;
 
+}
+
+exports.postGetUser = async (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    //console.log(authHeader, 'auth$$$$')
+   try {
+    if(!authHeader){
+        //throwError({ success: false, status: 401, message: 'token not found'});
+        return res.json({ success: false});
+    }
+    const token = authHeader.split(' ')[1];
+    if(!token){
+        return res.json({ success: false })
+    }
+    //console.log(token, '-------')
+    const decodedUser = jwt.verify(token, config.jwtSecret);
+    if(!decodedUser){
+        return res.json({ success: false});
+    }
+    console.log(decodedUser, 'decoded user')
+    const user = await User.findById(decodedUser._id);
+    if(!user){
+        throwError({ success: false, status: 401, message: 'user not found'})
+    }
+    const data = {
+       ...user._doc,
+       password: undefined,
+    }
+    return res.json({ success: true, data: data})
+
+   } catch (error) {
+       if(error.message === 'invalid token'){
+           //console.log(error.message, 'errMMM')
+           return res.json({ success: false });
+       }
+       next(error);
+   }
 }
