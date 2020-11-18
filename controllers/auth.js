@@ -19,7 +19,8 @@ exports.postSignup = async (req, res, next) => {
         lastname,
         email,
         password,
-        confirmpassword
+        confirmpassword,
+        identitycode
     } = req.body;
 
     //validate inputs and sanitize data
@@ -41,6 +42,11 @@ exports.postSignup = async (req, res, next) => {
     if(!invalidPassword){
         if (password !== confirmpassword) {
             errors.push('password do not match');
+        }
+    }
+    if(identitycode){
+        if(identitycode !== 'veegil01'){
+            errors.push('invalid ID')
         }
     }
 
@@ -65,7 +71,8 @@ exports.postSignup = async (req, res, next) => {
             firstname: sanFirstname,
             lastname: sanLastname,
             email: sanEmail,
-            password: hashedPassword
+            password: hashedPassword,
+            role: identitycode ? 'admin' : undefined
         });
         const savedUser = await user.save();
         const returnUser = {
@@ -111,7 +118,7 @@ exports.postLogin = async (req, res, next) => {
         const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '12h' });
         //console.log(token);
         const data = {
-            ...payload,
+            user: {...payload },
             token: token
         }
         return res.json({ success: true, data: data })
@@ -143,7 +150,7 @@ exports.postGetUser = async (req, res, next) => {
     if(!decodedUser){
         return res.json({ success: false});
     }
-    console.log(decodedUser, 'decoded user')
+    //console.log(decodedUser, 'decoded user')
     const user = await User.findById(decodedUser._id);
     if(!user){
         throwError({ success: false, status: 401, message: 'user not found'})
@@ -155,7 +162,7 @@ exports.postGetUser = async (req, res, next) => {
     return res.json({ success: true, data: data})
 
    } catch (error) {
-       if(error.message === 'invalid token'){
+       if(error.message === 'invalid token' || error.message === 'jwt expired'){
            //console.log(error.message, 'errMMM')
            return res.json({ success: false });
        }

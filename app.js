@@ -25,9 +25,10 @@ app.use(productRoutes);
 
 //handle errors
 app.use((errors, req, res, next) => {
-    console.log(errors);
+    //console.log(errors);
     const message = errors.message;
     const status = errors.status || 500;
+    console.log(message, '-------')
     res.status(status).json({ success: false, status: status, message: message })
 })
 
