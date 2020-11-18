@@ -11,8 +11,8 @@ const Navigation = (props) => {
     //check to display user profile or login, signup button
     let authButtonsOrProfile = (
         <Aux>
-            <Link class="btn btn-outline-light my-2 my-sm-0 auth-button" to="/login" role="button">Login</Link>
-            <Link class="btn btn-outline-light my-2 my-sm-0 auth-button" to="/signup" role="button">Signup</Link>
+            <Link className="btn btn-outline-light my-2 my-sm-0 auth-button" to="/login" role="button">Login</Link>
+            <Link className="btn btn-outline-light my-2 my-sm-0 auth-button" to="/signup" role="button">Signup</Link>
         </Aux>
     )
     if(userData.user){
