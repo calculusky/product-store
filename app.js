@@ -28,8 +28,14 @@ app.use((errors, req, res, next) => {
     //console.log(errors);
     const message = errors.message;
     const status = errors.status || 500;
+    const validationErrors = errors.validationErrors || undefined;
     console.log(message, '-------')
-    res.status(status).json({ success: false, status: status, message: message })
+    res.status(status).json({ 
+        success: false, 
+        status: status, 
+        message: message, 
+        validationErrors: validationErrors 
+    })
 })
 
 module.exports = app;

@@ -3,10 +3,10 @@ const { hash, compare } = require('bcryptjs');
 const { throwError, normalizeName } = require('../utilities/helpers');
 const config = require('../config');
 const jwt = require('jsonwebtoken');
-
 const {
     isEmail,
     isEmpty,
+    isAlpha,
     normalizeEmail,
     isAlphanumeric
 } = require('validator');
@@ -25,34 +25,37 @@ exports.postSignup = async (req, res, next) => {
 
     //validate inputs and sanitize data
     const errors = [];
-    let invalidPassword;
-    if(isEmpty(firstname)){
-        errors.push('Invalid name')
+    //let invalidPassword;
+    if(isEmpty(firstname) || !isAlpha(firstname)){
+        errors.push({ msg: 'Invalid Firstname', param: 'firstname' })
     }
-    if(isEmpty(lastname)){
-        errors.push('Invalid name')
+    if(isEmpty(lastname) || !isAlpha(lastname)){
+        errors.push({ msg: 'Invalid Lastname', param: 'lastname' })
     }
-    if(!isEmail(email.trim())){
-        errors.push('Invalid email')
+    if(!isEmail(email)){
+        errors.push({ msg: 'Invalid Email', param: 'email' })
     }
     if(!isAlphanumeric(password)){
-        invalidPassword = true;
-        errors.push('Invalid password')
+        //invalidPassword = true;
+        errors.push({ msg: 'Invalid Password', param: 'password' })
     }
-    if(!invalidPassword){
-        if (password !== confirmpassword) {
-            errors.push('password do not match');
-        }
+    // if(!invalidPassword){
+    //     if (password !== confirmpassword) {
+    //         errors.push('password do not match');
+    //     }
+    // }
+    if (password !== confirmpassword) {
+        errors.push({ msg: 'Password do not match', param: 'confirmpassword' });
     }
     if(identitycode){
         if(identitycode !== 'veegil01'){
-            errors.push('invalid ID')
+            errors.push({ msg: 'Incorrect ID', param: 'identitycode' })
         }
     }
 
     try {
         if(errors.length > 0){
-            throwError({ message: errors, status: 422});
+            throwError({ message: errors, status: 422, validationErrors: true });
         }
         //sanitize inputs
         const sanEmail = normalizeEmail(email.trim());
