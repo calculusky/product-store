@@ -96,7 +96,14 @@ exports.postLogin = async (req, res, next) => {
     //check login credentials and generate token for the logged in user
    try {
         const errors = [];
+        if(email === null || password === null){
+            throwError({ success: false, status: 422, message: 'Email or Password cannot be empty' });
+        }
+        
         if(!isEmail(email)){
+            throwError({ success: false, status: 422, message: 'Incorrect email or password' });
+        }
+        if(!isAlphanumeric(password)){
             throwError({ success: false, status: 422, message: 'Incorrect email or password' });
         }
         

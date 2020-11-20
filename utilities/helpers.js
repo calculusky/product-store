@@ -2,8 +2,9 @@ const path = require('path');
 const fs = require('fs');
 
 //throws error
-exports.throwError = ({ message, status, detail, validationErrors }) => {
+exports.throwError = ({ message, status, success, validationErrors }) => {
     const error = new Error();
+    error.success = success;
     error.message = message;
     error.status = status;
     error.validationErrors = validationErrors;
