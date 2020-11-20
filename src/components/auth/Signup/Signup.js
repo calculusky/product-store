@@ -23,6 +23,10 @@ const Signup = (props) => {
     const [ confirmpassword, setConfirmpassword ] = useState(null);
     const [ identitycode, setIdentitycode ] = useState(null);
 
+    //validations
+    const [ validationErrors, setValidationErrors ] = useState(false)
+
+
     const history = useHistory();
     const { userData, setUserData } = useContext(UserContext);
 
@@ -56,8 +60,83 @@ const Signup = (props) => {
            }
            
        } catch (error) {
-           console.log(error.response.data, 'err*****')
+           if(error.response.data.validationErrors){
+               setValidationErrors(error.response.data.message);
+           }         
        }
+    }
+
+    //initialize form classes
+    let 
+        initialClass = "form-control form-input-bordercolor",
+        firstnameClass = initialClass,
+        lastnameClass = initialClass,
+        emailClass = initialClass,
+        passwordClass = initialClass,
+        confirmPasswordClass = initialClass, 
+        identityClass = initialClass;
+
+    //initialize error messages
+    let
+        initialErrorMessage = null,
+        firstnameErrorMessage = initialErrorMessage,
+        lastnameErrorMessage = initialErrorMessage,
+        emailErrorMessage = initialErrorMessage,
+        passwordErrorMessage = initialErrorMessage,
+        confirmPasswordErrorMessage =  initialErrorMessage,
+        identityErrorMessage = initialErrorMessage;
+     
+
+    //add error/success class and display error message
+    if(validationErrors){ 
+        //check firstname 
+        const isFirstnameError = validationErrors.find(e => e.param === 'firstname')    
+        const addFirstnameClass = isFirstnameError ? 'is-invalid' : 'is-valid';
+        const firArr = firstnameClass.split(' ');
+        firArr.push(addFirstnameClass)
+        firstnameClass = firArr.join(' ');
+        firstnameErrorMessage = isFirstnameError && isFirstnameError.msg;
+
+        //check lastname
+        const isLastnameError = validationErrors.find(e => e.param === 'lastname') 
+        const addLastnameClass = isLastnameError ? 'is-invalid' : 'is-valid';
+        const lasArr = lastnameClass.split(' ');
+        lasArr.push(addLastnameClass)
+        lastnameClass = lasArr.join(' ');
+        lastnameErrorMessage = isLastnameError && isLastnameError.msg
+
+
+        //check email
+        const isEmailError =  validationErrors.find(e => e.param === 'email');
+        const addEmailClass = isEmailError ? 'is-invalid' : 'is-valid';
+        const emailArr = emailClass.split(' ');
+        emailArr.push(addEmailClass)
+        emailClass = emailArr.join(' ');
+        emailErrorMessage = isEmailError && isEmailError.msg;
+
+        //check password
+        const isPasswordError = validationErrors.find(e => e.param === 'password');
+        const addPasswordClass = isPasswordError ? 'is-invalid' : 'is-valid';
+        const passArr = passwordClass.split(' ');
+        passArr.push(addPasswordClass)
+        passwordClass = passArr.join(' ');
+
+        //check confirm password
+        const isConfirmPasswordError = validationErrors.find(e => e.param === 'confirmpassword');
+        const addConfirmPasswordClass = isConfirmPasswordError ? 'is-invalid' : 'is-valid';
+        const confirmPassArr = confirmPasswordClass.split(' ');
+        confirmPassArr.push(addConfirmPasswordClass)
+        confirmPasswordClass = confirmPassArr.join(' ');
+        confirmPasswordErrorMessage = isConfirmPasswordError && isConfirmPasswordError.msg;
+
+        //check adminID
+        const isIdentityError = validationErrors.find(e => e.param === 'identitycode');
+        const addIdentityClass = isIdentityError ? 'is-invalid' : 'is-valid';
+        const idArr = identityClass.split(' ');
+        idArr.push(addIdentityClass)
+        identityClass = idArr.join(' ');
+        identityErrorMessage = isIdentityError && isIdentityError.msg
+
     }
 
     return ( 
@@ -66,6 +145,7 @@ const Signup = (props) => {
             <div className="form-heading">
             <h4>Product Store Signup</h4>
             </div>
+
             <form id="signupform" className="main-form" onSubmit={submitForm} noValidate>          
                 <div className="form-group">
                 <div className="form-row">
@@ -74,40 +154,27 @@ const Signup = (props) => {
                     <input 
                         type="text" 
                         name="firstname" 
-                        className="form-control form-input-bordercolor
-                            <% if(validationErrors.length > 0) { %>
-                            <%= validationErrors.find(e => e.param === 'firstname') ? 'is-invalid': 'is-valid' %>
-                            <% } %>" 
+                        className={firstnameClass}
                         id="validationServer01"
                         onChange={(e) => setFirstname(e.target.value)} 
-                        // value="<%= oldInputs.firstname %>">
-                        // <% if(validationErrors.find(e => e.param === 'firstname')){ %>
-                        // <% const message = validationErrors.find(e => e.param === 'firstname') %> 
-                        // <div id="validationServer01Feedback" className="invalid-feedback">                     
-                        //     <%= message.msg %> 
-                        // </div>
-                        // <% } %> 
-                        />
+                        /> 
+                        <div id="validationServer01Feedback" className="invalid-feedback">                     
+                            {firstnameErrorMessage}
+                        </div>
                     </div>
+
                     <div className="col-md-6 mb-3">
                     <label htmlFor="validationServer02">Last name <span className="impt">*</span></label>
                     <input 
                         type="text" 
                         name="lastname" 
-                        className="form-control form-input-bordercolor
-                            <% if(validationErrors.length > 0) { %>
-                            <%= validationErrors.find(e => e.param === 'lastname') ? 'is-invalid': 'is-valid' %>
-                            <% } %>" 
+                        className={lastnameClass}
                         id="validationServer02" 
                         onChange={(e) => setLastname(e.target.value)}
-                        // value="<%= oldInputs.lastname %>">
-                        // <% if(validationErrors.find(e => e.param === 'lastname')){ %>
-                        // <% const message = validationErrors.find(e => e.param === 'lastname') %> 
-                        // <div id="validationServer01Feedback" className="invalid-feedback">                     
-                        //     <%= message.msg %> 
-                        // </div>
-                        // <% } %>
-                        /> 
+                        />
+                        <div id="validationServer01Feedback" className="invalid-feedback">                     
+                            {lastnameErrorMessage}
+                        </div>
                     </div>
                 </div>  
                 </div>
@@ -120,17 +187,13 @@ const Signup = (props) => {
                         type="password" 
                         name="password"
                         placeholder="alphanumeric characters only" 
-                        className="form-control form-input-bordercolor"  
+                        className={passwordClass}  
                         id="validationServer03"
                         onChange={(e) => setPassword(e.target.value)}
-                        // value="<%= oldInputs.password %>">
-                        // <% if(validationErrors.find(e => e.param === 'password')){ %>
-                        // <% const message = validationErrors.find(e => e.param === 'password') %> 
-                        // <div id="validationServer01Feedback" className="invalid-feedback">                     
-                        //     <%= message.msg %> 
-                        // </div>
-                        // <% } %>
-                        />               
+                     /> 
+                     <div id="validationServer01Feedback" className="invalid-feedback">                     
+                        {passwordErrorMessage}
+                     </div>              
                     </div>
 
                     <div className="col-md-6 mb-3">
@@ -138,20 +201,13 @@ const Signup = (props) => {
                     <input 
                         type="password" 
                         name="confirmpassword" 
-                        className="form-control form-input-bordercolor
-                            <% if(validationErrors.length > 0) { %>
-                            <%= validationErrors.find(e => e.param === 'confirmpassword') ? 'is-invalid': 'is-valid' %>
-                            <% } %>" 
+                        className={confirmPasswordClass}
                         id="validationServer04"
                         onChange={(e) => setConfirmpassword(e.target.value)} 
-                        // value="<%= oldInputs.confirmpassword %>">
-                        // <% if(validationErrors.find(e => e.param === 'confirmpassword')){ %>
-                        // <% const message = validationErrors.find(e => e.param === 'confirmpassword') %> 
-                        // <div id="validationServer01Feedback" className="invalid-feedback">                     
-                        //     <%= message.msg %> 
-                        // </div>
-                        // <% } %> 
-                        />
+                    />
+                    <div id="validationServer01Feedback" className="invalid-feedback">                     
+                        {confirmPasswordErrorMessage}
+                     </div>
                     </div>
                 </div> 
                 </div>
@@ -163,20 +219,13 @@ const Signup = (props) => {
                     <input 
                         type="text" 
                         name="email" 
-                        className="form-control form-input-bordercolor
-                            <% if(validationErrors.length > 0) { %>
-                            <%= validationErrors.find(e => e.param === 'email') ? 'is-invalid': 'is-valid' %>
-                            <% } %>" 
+                        className={emailClass}
                         id="validationServer05"
-                        onChange={(e) => setEmail(e.target.value)} 
-                        // value="<%= oldInputs.email %>">
-                        // <% if(validationErrors.find(e => e.param === 'email')){ %>
-                        // <% const message = validationErrors.find(e => e.param === 'email') %> 
-                        // <div id="validationServer01Feedback" className="invalid-feedback">                     
-                        //     <%= message.msg %> 
-                        // </div>
-                        // <% } %> 
-                        />
+                        onChange={(e) => setEmail(e.target.value)}  
+                    />
+                    <div id="validationServer01Feedback" className="invalid-feedback">                     
+                        {emailErrorMessage}
+                     </div>
                     </div>
 
                     <div className="col-md-6 mb-3">
@@ -184,20 +233,13 @@ const Signup = (props) => {
                       <input 
                         type="text" 
                         name="identitycode" 
-                        className="form-control form-input-bordercolor
-                            <% if(validationErrors.length > 0) { %>
-                            <%= validationErrors.find(e => e.param === 'identitycode') ? 'is-invalid': 'is-valid' %>
-                            <% } %>" 
+                        className={identityClass}
                         id="validationServer06"
                         onChange={(e) => setIdentitycode(e.target.value)} 
-                        // value="<%= oldInputs.identitycode %>">
-                        /* <% if(validationErrors.find(e => e.param === 'identitycode')){ %>
-                        <% const message = validationErrors.find(e => e.param === 'identitycode') %> 
-                        <div id="validationServer01Feedback" className="invalid-feedback">                     
-                            <%= message.msg %> 
-                        </div>
-                        <% } %>  */
-                        />
+                      />
+                      <div id="validationServer01Feedback" className="invalid-feedback">                     
+                        {identityErrorMessage}
+                     </div>
                     </div>
                 </div>   
                 </div>   
