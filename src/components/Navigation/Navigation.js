@@ -6,7 +6,14 @@ import './Navigation.css'
 
 const Navigation = (props) => {
     const { userData, setUserData } = useContext(UserContext);
-    //console.log(userData, 'uuuuddd');
+    //attach click handler for logout
+    const logoutHandler = () => {
+        localStorage.setItem('token', '');
+        setUserData({
+            token: null,
+            user: null
+        });
+    } 
 
     //check to display user profile or login, signup button
     let authButtonsOrProfile = (
@@ -28,7 +35,7 @@ const Navigation = (props) => {
                             <Link className="dropdown-item"to="#">{ userData.user.firstname }</Link>
                             <Link className="dropdown-item"to="/addproduct">New Product</Link>
                             <div className="dropdown-divider"></div>                               
-                            <Link className="dropdown-item" to="javascript:void(0)" id="logoutLink">Logout</Link>
+                            <button className="dropdown-item" id="logoutLink" onClick={logoutHandler}>Logout</button>
                         </div>
                     </li>
                 </ul>

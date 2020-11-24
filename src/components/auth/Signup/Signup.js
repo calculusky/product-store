@@ -16,12 +16,12 @@ const Signup = (props) => {
     //     identitycode: ''
     // });
 
-    const [ firstname, setFirstname ] = useState(null);
-    const [ lastname, setLastname ] = useState(null);
-    const [ email, setEmail ] = useState(null);
-    const [ password, setPassword ] = useState(null);
-    const [ confirmpassword, setConfirmpassword ] = useState(null);
-    const [ identitycode, setIdentitycode ] = useState(null);
+    const [ firstname, setFirstname ] = useState('');
+    const [ lastname, setLastname ] = useState('');
+    const [ email, setEmail ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ confirmpassword, setConfirmpassword ] = useState('');
+    const [ identitycode, setIdentitycode ] = useState('');
 
     //validations
     const [ validationErrors, setValidationErrors ] = useState(false)
@@ -60,6 +60,9 @@ const Signup = (props) => {
            }
            
        } catch (error) {
+           if(error.response === undefined){
+            return setValidationErrors(null)
+           }
            if(error.response.data.validationErrors){
                setValidationErrors(error.response.data.message);
            }         

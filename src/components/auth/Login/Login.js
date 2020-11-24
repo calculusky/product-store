@@ -15,6 +15,8 @@ const Login = (props) => {
     const history = useHistory();
     const { userData, setUserData } = useContext(UserContext);
 
+    console.log(userData, '----login-----')
+
 
     const submitForm = async (event) => {
         event.preventDefault();
