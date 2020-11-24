@@ -23,6 +23,8 @@ exports.postSignup = async (req, res, next) => {
         identitycode
     } = req.body;
 
+    console.log(firstname, 'ffff')
+
     //validate inputs and sanitize data
     const errors = [];
     //let invalidPassword;
@@ -172,7 +174,7 @@ exports.postGetUser = async (req, res, next) => {
     return res.json({ success: true, data: data})
 
    } catch (error) {
-       if(error.message === 'invalid token' || error.message === 'jwt expired'){
+       if(error.message === 'invalid token' || error.message === 'jwt expired' || error.message === 'jwt malformed'){
            //console.log(error.message, 'errMMM')
            return res.json({ success: false });
        }

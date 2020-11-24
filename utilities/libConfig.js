@@ -4,10 +4,10 @@ exports.multerConfig = (multer) => {
     return {
             fileStorage: multer.diskStorage({
                 destination: (req, file, cb) => {
-                    cb(null, 'image')
+                    cb(null, 'images')
                 },
                 filename: (req, file, cb) => {
-                    cb(null, `${Date.now()}-${file.mimetype}`);
+                    cb(null, `${Date.now()}-${file.originalname}`);
                 }
             }),
 

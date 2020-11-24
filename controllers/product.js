@@ -1,5 +1,5 @@
 const Product = require('../models/product');
-const { isEmpty, isFloat } = require('validator');
+const { isEmpty, isFloat, isAlpha } = require('validator');
 const { throwError, deleteImage } = require('../utilities/helpers');
 
 
@@ -25,13 +25,15 @@ exports.postAddProduct = async (req, res, next) => {
     } = req.body;
     const image = req.file;
 
+    console.log(image, '----img-----%%%%')
+
     //validate and sanitize inputs
     const errors = [];
     const sanTitle = title.trim();
     if(isEmpty(sanTitle) || !isAlpha(sanTitle)){
         errors.push('Title must be letters only');
     }
-    if(!isFloat(price)){
+    if(!isFloat(price) || isEmpty(price)){
         errors.push('Price must be numeric or decimal input');
     }
     if(isEmpty(description)){
@@ -50,7 +52,7 @@ exports.postAddProduct = async (req, res, next) => {
             title: sanTitle,
             price: price,
             description: sanDescription,
-            imagePath: image.path
+            imagePath: image.path.replace('\\', '/')
         });
         const savedProduct = await product.save();
         const data = {

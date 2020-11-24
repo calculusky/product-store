@@ -13,6 +13,7 @@ const productRoutes = require('./routes/product');
 
 //set up middlewares
 app.use(cors());
+//app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(multer({
     storage: fileStorage,
@@ -29,7 +30,7 @@ app.use((errors, req, res, next) => {
     const message = errors.message;
     const status = errors.status || 500;
     const validationErrors = errors.validationErrors || undefined;
-    console.log(message, '-------')
+    console.log(message, '---throw error----')
     res.status(status).json({ 
         success: false, 
         status: status, 
