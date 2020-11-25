@@ -17,14 +17,14 @@ const CreateProduct = (props) => {
                     <input 
                         type="text" 
                         name="title" 
-                        className="form-control form-input-bordercolor"//{loginClass}
+                        className={props.showError.title[0]}
                         id="validationServer05"
                         onChange={props.change}
                         value={props.title}  
                     />
-                    {/* <div id="validationServer01Feedback" className="invalid-feedback">                     
-                        {loginErrorMessage}
-                     </div> */}
+                    <div id="validationServer01Feedback" className="invalid-feedback">                     
+                        {props.showError.title[1]}
+                     </div>
                     </div>
                   </div>   
                 </div> 
@@ -36,14 +36,14 @@ const CreateProduct = (props) => {
                     <input 
                         type="number" 
                         name="price" 
-                        className="form-control form-input-bordercolor"//{}
+                        className={props.showError.price[0]}
                         id="validationServer05"
                         onChange={props.change}
                         value={props.price}  
                     />
-                    {/* <div id="validationServer01Feedback" className="invalid-feedback">                     
-                        {loginErrorMessage}
-                     </div> */}
+                    <div id="validationServer01Feedback" className="invalid-feedback">                     
+                        {props.showError.price[1]}
+                     </div>
                     </div>
                   </div>   
                 </div> 
@@ -55,15 +55,13 @@ const CreateProduct = (props) => {
                     <input 
                         type="file" 
                         name="image" 
-                        className= "form-control form-input-bordercolor"//{loginClass}
+                        className={props.showError.image[0]}
                         id="validationServer05"
-                        //readOnly
-                        //value={props.image}
                         onChange={props.change}  
                     />
-                    {/* <div id="validationServer01Feedback" className="invalid-feedback">                     
-                        {loginErrorMessage}
-                     </div> */}
+                    <div id="validationServer01Feedback" className="invalid-feedback">                     
+                        {props.showError.image[1]}
+                     </div>
                     </div>
                   </div>   
                 </div>    
@@ -77,14 +75,14 @@ const CreateProduct = (props) => {
                         cols="10"
                         type="text" 
                         name="description" 
-                        className="form-control form-input-bordercolor"//{}
+                        className={props.showError.description[0]}
                         id="validationServer05"
                         onChange={props.change} 
                         value={props.description} 
                     />
-                    {/* <div id="validationServer01Feedback" className="invalid-feedback">                     
-                        {loginErrorMessage}
-                     </div> */}
+                    <div id="validationServer01Feedback" className="invalid-feedback">                     
+                        {props.showError.description[1]}
+                     </div>
                     </div>
                   </div>   
                 </div>   

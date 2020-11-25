@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navigation from './components/Navigation/Navigation';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Products from './components/store/Products/Products';
+import HomePage from './containers/HomePage/HomePage';
 import Signup from './components/auth/Signup/Signup';
 import Login from './components/auth/Login/Login';
 import CreateProductPage from './containers/CreateProductPage/CreateProductPage';
@@ -42,7 +42,7 @@ function App() {
         <UserContext.Provider value={{ userData, setUserData }}>
           <Navigation/> 
           <Switch>
-            <Route exact path="/" component={Products} /> 
+            <Route exact path="/" component={HomePage} /> 
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />
             <Route path="/addproduct" component={CreateProductPage} />
