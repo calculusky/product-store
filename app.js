@@ -20,6 +20,9 @@ app.use(multer({
     fileFilter: fileFilter
 }).single('image'))
 
+//serve static files
+app.use('/image', express.static(path.join(__dirname, 'images')));
+
 //register routes
 app.use('/auth', authRoutes );
 app.use(productRoutes);

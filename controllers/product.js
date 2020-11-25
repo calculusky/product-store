@@ -6,10 +6,10 @@ const { throwError, deleteImage } = require('../utilities/helpers');
 exports.getProducts = async (req, res, next) => {
    try {
     const products = await Product.find();
-    const data = {
-        ...products._doc
-    }
-    return res.json({ success: true, data: data });
+    // const data = {
+    //     title: products.tit
+    // }
+    return res.json({ success: true, data: products });
 
    } catch (error) {
        next(error);
@@ -31,22 +31,24 @@ exports.postAddProduct = async (req, res, next) => {
     const errors = [];
     const sanTitle = title.trim();
     if(isEmpty(sanTitle) || !isAlpha(sanTitle)){
-        errors.push('Title must be letters only');
+        errors.push({ msg: 'Title must be letters only', param: 'title'});
     }
     if(!isFloat(price) || isEmpty(price)){
-        errors.push('Price must be numeric or decimal input');
+        errors.push({ msg: 'Price must be numeric or decimal input', param: 'price'});
     }
     if(isEmpty(description)){
-        errors.push('Description must not be empty');
+        errors.push({ msg: 'Description must not be empty', param: 'description'});
     }
+     //check if image was added
+    if(!image){
+        errors.push({ msg: 'No image selected', param: 'image'})
+    } 
    try {
         if(errors.length > 0){
-            throwError({ success: false, status: 422, message: 'Invalid inputs' });
+            throwError({ success: false, status: 422, message: errors });
         } 
-        //check if image was added
-        if(!image){
-            throwError({ success: false, status: 422, message: 'No image selected' });
-        } 
+       
+        
         const sanDescription = description.trim();
         const product = new Product({
             title: sanTitle,
