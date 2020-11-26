@@ -12,7 +12,7 @@ exports.multerConfig = (multer) => {
             }),
 
             fileFilter: (req, file, cb) => {
-                if(file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+                if(file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.size <= 5000){
                     cb(null, true)
                 }else{
                     cb(null, false);

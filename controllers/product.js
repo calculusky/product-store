@@ -25,13 +25,13 @@ exports.postAddProduct = async (req, res, next) => {
     } = req.body;
     const image = req.file;
 
-    console.log(image, '----img-----%%%%')
+    //console.log(image, '----img-----%%%%')
 
     //validate and sanitize inputs
     const errors = [];
     const sanTitle = title.trim();
-    if(isEmpty(sanTitle) || !isAlpha(sanTitle)){
-        errors.push({ msg: 'Title must be letters only', param: 'title'});
+    if(isEmpty(sanTitle)){
+        errors.push({ msg: 'Title must have a minimum letter of three ', param: 'title'});
     }
     if(!isFloat(price) || isEmpty(price)){
         errors.push({ msg: 'Price must be numeric or decimal input', param: 'price'});

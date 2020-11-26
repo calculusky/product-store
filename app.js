@@ -21,7 +21,7 @@ app.use(multer({
 }).single('image'))
 
 //serve static files
-app.use('/image', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //register routes
 app.use('/auth', authRoutes );
