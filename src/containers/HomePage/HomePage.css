@@ -1,6 +1,12 @@
 .grid {
+    margin-top: 80px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: stretch;
+}
+
+.AnimateProduct {
+    text-align: center;
+    margin-top: 80px;
 }

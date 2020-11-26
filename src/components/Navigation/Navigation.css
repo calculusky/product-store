@@ -1,4 +1,14 @@
 
-.auth-button {
-    margin-right: 8px;
+.bg-color {
+    background-color: #290394;
 }
+
+.LetterHead {
+    color: #e6ff02 !important;
+    border-radius: 10px;
+}
+
+.Link:hover {
+   color: rgb(255, 214, 139)!important;
+}
+

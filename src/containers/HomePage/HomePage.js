@@ -34,17 +34,21 @@ const HomePage = () => {
         fetchProducts();
 
     }, [])
+    
 
     //set products variable
+    let animateProduct = null;
     let displayProducts = (
         <Aux>
             <h2>No products!</h2>
         </Aux>
     ) 
     if(products.length > 0){
+        animateProduct = 'Our Product Store'
         const listProducts = products.map(product => {
             return (
                 <Product
+                   key={product._id}
                    title={product.title}
                    price={product.price}
                    imagePath={product.imagePath}
@@ -62,6 +66,7 @@ const HomePage = () => {
    
     return (
         <div className="container">
+            <h1 className="AnimateProduct animate__animated animate__zoomIn animate__slow">{animateProduct}</h1>
             {displayProducts}
         </div>
     )
